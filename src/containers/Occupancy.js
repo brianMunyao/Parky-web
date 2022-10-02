@@ -7,71 +7,55 @@ import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
 import ParkingLot from '../components/ParkingLot';
 import AppBtn from '../components/AppBtn';
+import { useSelector } from 'react-redux';
+import { getParkingMap } from '../config/apis';
+import { toast } from 'react-toastify';
 
 const Occupancy = ({ active }) => {
-	const [parkingMap, setParkingMap] = useState(Array(14).fill(null));
-	const [parkingStatus, setParkingStatus] = useState(Array(14).fill(null));
+	const [activeLoc, setActiveLoc] = useState(0);
+
+	const { locations, occupancyMap } = useSelector(
+		(state) => state.occupancyReducer
+	);
 
 	const [timeRefreshed, setTimeRefreshed] = useState(moment());
 	const [refreshing, setRefreshing] = useState(false);
 
-	const getParkingMap = () => {
-		axios
-			.get('/api/parkingMap')
-			.then((res) => {
-				//const tt = JSON.parse(res.data.data);
-				//const mm = [...tt];
-				setParkingMap(res.data.data);
-			})
-			// .then((res) => setMap(JSON.parse(res.data.data)))
-			.catch((err) => console.log('error', err));
-	};
-
-	const getStatus = async () => {
-		const { data } = await axios.get('/api/space');
-		return data;
-		// axios.get('/api/space') //, { responseType: 'blob' })
-		// 	.then((res) => {
-		// 		setParkingStatus(res.data.data);
-		// 		setTimeRefreshed(moment());
-		// 		// console.log(res.data);
-		// 	})
-		// 	.catch((err) => console.log(err));
-	};
-
-	const getLotStatus = (lot) => {
-		try {
-			const found = parkingStatus.filter((ps) => ps.lot_name === lot);
-			return found[0].occupied;
-		} catch (e) {
-			return false;
-		}
-	};
-
-	const refreshStatus = () => {
-		setRefreshing(true);
-
-		getParkingMap();
-		getStatus()
-			.then((res) => {
-				setParkingStatus(res.data);
-				setTimeRefreshed(moment());
-				setRefreshing(false);
-			})
-			.catch((err) => {
-				console.log(err);
-				setRefreshing(false);
-			});
-	};
-
-	useEffect(() => {}, []);
+	useEffect(() => {
+		if (locations.length > 0) setActiveLoc(locations[0].loc_id);
+	}, []);
 
 	return (
 		<Container>
-			<BaseTab active={active} title="Occupancy">
-				{/* {JSON.stringify(parkingStatus)} */}
+			<BaseTab
+				active={active}
+				title="Occupancy"
+				belowTopBarComponent={
+					<div className="occ-below-top">
+						<div className="occ-below-left">
+							<AppBtn
+								text="Add Location"
+								className="occ-below-btn"
+								onClick={() => toast.info('add modal here')}
+							/>
+						</div>
+						<div className="occ-below-right">
+							{locations.map(({ loc_id, loc_name }) => (
+								<LocTab
+									active={loc_id === activeLoc}
+									onClick={() => setActiveLoc(loc_id)}>
+									{loc_name}
+								</LocTab>
+							))}
+							<LocTab active={false}>Thika Road Mall</LocTab>
+						</div>
+					</div>
+				}>
+				{/* {JSON.stringify(occupancyMap)} */}
+				<div>###############</div>
+				{JSON.stringify(locations)}
 
-				<div className="occ-status">
+				{/* <div className="occ-status">
 					<AppBtn
 						loading={refreshing}
 						className="occ-refresh-btn"
@@ -80,8 +64,8 @@ const Occupancy = ({ active }) => {
 						width="100px"
 					/>
 					<span>Refreshed {moment(timeRefreshed).fromNow()}</span>
-				</div>
-				<div className="occ-parking-con">
+				</div> */}
+				{/* <div className="occ-parking-con">
 					<div className="occ-parking-lots">
 						{parkingMap.slice(7).map((c) => (
 							<ParkingLot
@@ -103,13 +87,88 @@ const Occupancy = ({ active }) => {
 							/>
 						))}
 					</div>
-				</div>
+				</div> */}
 			</BaseTab>
 		</Container>
 	);
 };
 
+const LocTab = styled.div`
+	background: ${({ active }) =>
+		active ? colors.primaryYellowLighter : 'transparent'};
+	color: ${({ active }) => (active ? colors.primaryYellowDark : '#8d8d8d')};
+	border-bottom: ${({ active }) =>
+		active
+			? `2px solid ${colors.primaryYellowLight}`
+			: '2px solid transparent'};
+	height: 100%;
+	display: flex;
+	align-items: center;
+	padding: 0 10px;
+	transition: all 0.2s linear;
+	cursor: pointer;
+	user-select: none;
+	font-weight: 600;
+	font-size: 15px;
+	letter-spacing: 0.1px;
+	text-transform: capitalize;
+
+	&:hover {
+		background: ${({ active }) =>
+			active ? colors.primaryYellowLight : '#f0f0f0'};
+		border-bottom: ${({ active }) =>
+			active ? `2px solid ${colors.primaryYellow}` : '2px solid #e1e1e1'};
+	}
+	&:active {
+		color: ${({ active }) =>
+			active ? colors.primaryYellowDarker : '#828282'};
+		background: ${({ active }) =>
+			active ? colors.primaryYellowLight : '#e8e8e8'};
+		border-bottom: ${({ active }) =>
+			active ? `2px solid ${colors.primaryYellow}` : '2px solid #d3d3d3'};
+	}
+`;
+
 const Container = styled.div`
+	.occ-below-top {
+		background: #fff;
+		border-bottom: 1.5px solid #f2f2f2;
+		display: grid;
+		grid-template-columns: 105px 1fr;
+		grid-template-rows: 1fr;
+		gap: 15px;
+		padding: 0 0 0 10px;
+
+		.occ-below-left {
+			height: 100%;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			.occ-below-btn {
+				height: 30px;
+				font-size: 15px;
+				margin: auto;
+			}
+		}
+		.occ-below-right {
+			overflow-x: auto;
+			display: flex;
+			align-items: center;
+			::-webkit-scrollbar {
+				display: none;
+			}
+			div {
+				white-space: nowrap;
+				/* background-color: $; */
+			}
+		}
+	}
+
+	/* ?
+	
+	
+	*/
 	.occ-status {
 		margin-bottom: 20px;
 		.occ-refresh-btn {

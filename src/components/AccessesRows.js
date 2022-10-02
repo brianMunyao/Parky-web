@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { convertMoney } from '../config/utils';
 
 const AccessesRows = ({ data = [] }) => {
-	const { appWidth } = useSelector((state) => state.appWidthReducer);
+	const { appWidth } = useSelector((state) => state.mainReducer);
 
 	return (
 		<Container>

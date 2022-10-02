@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -18,9 +18,10 @@ import Settings from './Settings';
 import Occupancy from './Occupancy';
 import AccessControl from './AccessControl';
 import UserHomeScreen from './UserHomeScreen';
-import { updateAppWidth } from '../store/widthSlice';
-import { getAccesses } from '../config/apis';
+import { updateAppWidth } from '../store/mainSlice';
+import { getAccesses, getLocations, getParkingMap } from '../config/apis';
 import { updateAccesses } from '../store/accessesSlice';
+import { updateLocations, updateOccupancyMap } from '../store/occupancySlice';
 
 const pages = [
 	{ label: 'Dashboard', Page: DashBoard, Icon: HiOutlineTemplate },
@@ -33,15 +34,10 @@ const HomeScreen = () => {
 	const [cookies] = useCookies(['user']);
 	const [activeTab, setActiveTab] = useState(0);
 
-	const { appWidth } = useSelector((state) => state.appWidthReducer);
+	const { appWidth } = useSelector((state) => state.mainReducer);
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		dispatch(updateAppWidth(window.innerWidth));
-		window.addEventListener('resize', () =>
-			dispatch(updateAppWidth(window.innerWidth))
-		);
-
+	const initialFetch = useCallback(() => {
 		getAccesses()
 			.then((res) => {
 				if (res.data) {
@@ -53,7 +49,27 @@ const HomeScreen = () => {
 				}
 			})
 			.catch((err) => toast.error(`api call error, ${err}`));
+
+		getLocations()
+			.then((res) => dispatch(updateLocations(res.data)))
+			.catch((err) => console.log('Locations:', err));
+
+		getParkingMap()
+			.then((res) => {
+				console.log(res);
+				dispatch(updateOccupancyMap(res.data));
+			})
+			.catch((err) => console.log('Occupancy:', err));
 	}, [dispatch]);
+
+	useEffect(() => {
+		dispatch(updateAppWidth(window.innerWidth));
+		window.addEventListener('resize', () =>
+			dispatch(updateAppWidth(window.innerWidth))
+		);
+
+		// initialFetch();
+	}, [dispatch, initialFetch]);
 
 	const changeTab = (id) => setActiveTab(id);
 
@@ -121,8 +137,8 @@ const Container = styled.div`
 		left: 0;
 		width: 200px;
 		z-index: 1;
-		box-shadow: 1px 1px 5px #f9f9f9;
-		border-right: 1px solid #f2f2f2;
+		/* box-shadow: 1px 1px 5px #f9f9f9; */
+		border-right: 1.5px solid #f2f2f2;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

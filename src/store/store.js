@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import widthReducer from './widthSlice';
+import mainReducer from './mainSlice';
 import accessReducer from './accessesSlice';
+import occupancyReducer from './occupancySlice';
 
 export const store = configureStore({
-    reducer: {
-        appWidthReducer: widthReducer,
-        accessesReducer: accessReducer,
-    },
-    devTools: true,
+	reducer: {
+		mainReducer: mainReducer,
+		accessesReducer: accessReducer,
+		occupancyReducer: occupancyReducer,
+	},
+	devTools: true,
 });
