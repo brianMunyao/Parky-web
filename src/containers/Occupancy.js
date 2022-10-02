@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import moment from 'moment';
 
 import colors from '../config/colors';
@@ -8,11 +7,12 @@ import BaseTab from '../components/BaseTab';
 import ParkingLot from '../components/ParkingLot';
 import AppBtn from '../components/AppBtn';
 import { useSelector } from 'react-redux';
-import { getParkingMap } from '../config/apis';
 import { toast } from 'react-toastify';
+import ModalLocation from '../components/ModalLocation';
 
 const Occupancy = ({ active }) => {
 	const [activeLoc, setActiveLoc] = useState(0);
+	const [modalOpen, setModalOpen] = useState(false);
 
 	const { locations, occupancyMap } = useSelector(
 		(state) => state.occupancyReducer
@@ -23,39 +23,39 @@ const Occupancy = ({ active }) => {
 
 	useEffect(() => {
 		if (locations.length > 0) setActiveLoc(locations[0].loc_id);
-	}, []);
+	}, [locations]);
 
 	return (
-		<Container>
-			<BaseTab
-				active={active}
-				title="Occupancy"
-				belowTopBarComponent={
-					<div className="occ-below-top">
-						<div className="occ-below-left">
-							<AppBtn
-								text="Add Location"
-								className="occ-below-btn"
-								onClick={() => toast.info('add modal here')}
-							/>
+		<>
+			<Container>
+				<BaseTab
+					active={active}
+					title="Occupancy"
+					belowTopBarComponent={
+						<div className="occ-below-top">
+							<div className="occ-below-left">
+								<AppBtn
+									text="Add Location"
+									className="occ-below-btn"
+									onClick={() => setModalOpen(true)}
+								/>
+							</div>
+							<div className="occ-below-right">
+								{locations.map(({ loc_id, loc_name }) => (
+									<LocTab
+										active={loc_id === activeLoc}
+										onClick={() => setActiveLoc(loc_id)}>
+										{loc_name}
+									</LocTab>
+								))}
+							</div>
 						</div>
-						<div className="occ-below-right">
-							{locations.map(({ loc_id, loc_name }) => (
-								<LocTab
-									active={loc_id === activeLoc}
-									onClick={() => setActiveLoc(loc_id)}>
-									{loc_name}
-								</LocTab>
-							))}
-							<LocTab active={false}>Thika Road Mall</LocTab>
-						</div>
-					</div>
-				}>
-				{/* {JSON.stringify(occupancyMap)} */}
-				<div>###############</div>
-				{JSON.stringify(locations)}
+					}>
+					{/* {JSON.stringify(occupancyMap)} */}
+					<div>###############</div>
+					{JSON.stringify(locations)}
 
-				{/* <div className="occ-status">
+					{/* <div className="occ-status">
 					<AppBtn
 						loading={refreshing}
 						className="occ-refresh-btn"
@@ -65,7 +65,7 @@ const Occupancy = ({ active }) => {
 					/>
 					<span>Refreshed {moment(timeRefreshed).fromNow()}</span>
 				</div> */}
-				{/* <div className="occ-parking-con">
+					{/* <div className="occ-parking-con">
 					<div className="occ-parking-lots">
 						{parkingMap.slice(7).map((c) => (
 							<ParkingLot
@@ -88,8 +88,13 @@ const Occupancy = ({ active }) => {
 						))}
 					</div>
 				</div> */}
-			</BaseTab>
-		</Container>
+				</BaseTab>
+			</Container>
+			<ModalLocation
+				isOpen={modalOpen}
+				onClose={() => setModalOpen(false)}
+			/>
+		</>
 	);
 };
 
@@ -105,7 +110,7 @@ const LocTab = styled.div`
 	display: flex;
 	align-items: center;
 	padding: 0 10px;
-	transition: all 0.2s linear;
+	transition: all 0.1s linear;
 	cursor: pointer;
 	user-select: none;
 	font-weight: 600;

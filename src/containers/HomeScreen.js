@@ -56,7 +56,6 @@ const HomeScreen = () => {
 
 		getParkingMap()
 			.then((res) => {
-				console.log(res);
 				dispatch(updateOccupancyMap(res.data));
 			})
 			.catch((err) => console.log('Occupancy:', err));
@@ -68,7 +67,7 @@ const HomeScreen = () => {
 			dispatch(updateAppWidth(window.innerWidth))
 		);
 
-		// initialFetch();
+		initialFetch();
 	}, [dispatch, initialFetch]);
 
 	const changeTab = (id) => setActiveTab(id);

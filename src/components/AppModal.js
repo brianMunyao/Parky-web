@@ -1,12 +1,17 @@
 import { Modal } from '@mui/material';
 import React from 'react';
 
-const AppModal = ({ isOpen, handleClose, children }) => {
+const AppModal = ({ isOpen, onClose, children }) => {
 	return (
 		<Modal
 			open={isOpen}
-			onClose={handleClose}
-			style={{ overflowY: 'auto' }}>
+			onClose={onClose}
+			style={{
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				overflowY: 'auto',
+			}}>
 			{children}
 		</Modal>
 	);
