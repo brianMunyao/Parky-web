@@ -46,16 +46,24 @@ export const addLocation = async (newLoc) => {
 	return data;
 };
 
+export const configureSpots = async (formData) => {
+	const { data } = await axios.post('/api/configureSpaces', formData, {
+		headers: { 'Content-Type': 'multipart/form-data' },
+	});
+
+	return data;
+};
+
 //
 //
 //
 //
 
 export const register = async (user) => {
-	const { data } = await axios.post('/api/register', { user });
+	const { data } = await axios.post('/api/register', user);
 	return data;
 };
 export const login = async (user) => {
-	const { data } = await axios.post('/api/login', { user });
+	const { data } = await axios.post('/api/login', user);
 	return data;
 };

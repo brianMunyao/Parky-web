@@ -8,6 +8,7 @@ import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
 import { getFee } from '../config/utils';
 import { vehicleEnter, vehicleEnterPut, vehicleExitPost } from '../config/apis';
+import FileUpload from '../components/FileUpload';
 
 const AccessControl = ({ active }) => {
 	const entry = (e) => {
@@ -43,11 +44,12 @@ const AccessControl = ({ active }) => {
 
 				vehicleEnterPut(obj)
 					.then((res) => {
-						if (res.data.error) {
-							toast.error(res.data);
+						console.log(res);
+						if (res.error) {
+							toast.error(res.error);
 						} else {
 							const { entry_time, exit_time, fee_paid } =
-								res.data.data;
+								res.data;
 
 							toast.success(
 								`From: ${moment(entry_time).format(
@@ -70,40 +72,16 @@ const AccessControl = ({ active }) => {
 			<BaseTab title="Access Control" active={active}>
 				{/* <img src="/api/access/stream" alt="stream" /> */}
 				<div className="ac-options">
-					<div className="ac-option">
-						<input
-							type="file"
-							name="entrance"
-							id="entrance"
-							onChange={(e) => entry(e)}
-						/>
-						<label htmlFor="entrance">
-							<div className="ac-option-inner">
-								<IoImageOutline />
-								<p className="ac-option-text">
-									Simulate Vehicle
-									<br /> Entrance
-								</p>
-							</div>
-						</label>
-					</div>
-					<div className="ac-option">
-						<input
-							type="file"
-							name="exit"
-							id="exit"
-							onChange={(e) => exit(e)}
-						/>
-						<label htmlFor="exit">
-							<div className="ac-option-inner">
-								<IoImageOutline />
-								<p className="ac-option-text">
-									Simulate Vehicle
-									<br /> Exit
-								</p>
-							</div>
-						</label>
-					</div>
+					<FileUpload
+						title="Simulate Vehicle Entry"
+						name="entry"
+						onChange={(e) => entry(e)}
+					/>
+					<FileUpload
+						title="Simulate Vehicle Exit"
+						name="exit"
+						onChange={(e) => exit(e)}
+					/>
 				</div>
 			</BaseTab>
 		</Container>
@@ -115,40 +93,6 @@ const Container = styled.div`
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		grid-gap: 10px;
-		.ac-option {
-			box-shadow: rgba(185, 190, 195, 0.2) 0px 8px 24px;
-			border-radius: 8px;
-			padding: 5px;
-			background: white;
-			position: relative;
-			.ac-option-inner {
-				padding: 5px;
-				border: 1.5px dashed ${colors.primaryBlueLighter};
-				border-radius: 5px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				flex-direction: column;
-				padding: 50px 0;
-				svg {
-					font-size: 100px;
-					color: ${colors.primaryBlueLighter};
-					margin-bottom: 10px;
-				}
-				p {
-					text-align: center;
-					font-weight: 600;
-					color: ${colors.primaryBlueDarker};
-				}
-			}
-			input {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 0;
-				height: 0;
-			}
-		}
 	}
 `;
 

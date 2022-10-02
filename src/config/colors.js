@@ -11,6 +11,7 @@ const colors = {
 	primaryBlueDarker: '#176e83',
 	primaryBlueLight: '#9cdeed',
 	primaryBlueLighter: '#cdeef6',
+	primaryBlueLightest: '#dbf3f8',
 
 	primaryYellowDark: '#9a7600',
 	primaryYellowDarker: '#4b3900',

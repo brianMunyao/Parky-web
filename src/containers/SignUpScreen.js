@@ -4,11 +4,11 @@ import { useCookies } from 'react-cookie';
 import { Navigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import moment from 'moment';
-import axios from 'axios';
 
 import BaseForm from '../components/BaseForm';
 import FormItem from '../components/FormItem';
 import { encrypt, isLoggedIn } from '../config/utils';
+import { register } from '../config/apis';
 
 const SignUpScreen = () => {
 	const [cookies, setCookie] = useCookies(['user']);
@@ -33,14 +33,13 @@ const SignUpScreen = () => {
 				role: 'user', //! CHANGE THIS LATER
 			};
 
-			axios
-				.post('/api/register', data)
+			register(data)
 				.then((res) => {
-					if (res.data.error) {
-						setFormError(res.data.error);
+					if (res.error) {
+						setFormError(res.error);
 					} else {
 						setFormError('');
-						setCookie('user', JSON.stringify(res.data.data));
+						setCookie('user', JSON.stringify(res.data));
 					}
 				})
 				.catch((err) => {

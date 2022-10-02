@@ -8,7 +8,6 @@ import { HiOutlineTemplate, HiOutlineCog } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import { IoPower } from 'react-icons/io5';
 import { toast } from 'react-toastify';
-import moment from 'moment';
 
 import { isLoggedIn, sortByDate } from '../config/utils';
 import Logo from '../components/Logo';

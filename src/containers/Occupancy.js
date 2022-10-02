@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
 import ParkingLot from '../components/ParkingLot';
 import AppBtn from '../components/AppBtn';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import ModalLocation from '../components/ModalLocation';
+import GreenspanMall from '../lots/GreenspanMall';
+import { capitalize, removeSpaces } from '../config/utils';
+import LotTest from '../lots/LotTest';
 
 const Occupancy = ({ active }) => {
 	const [activeLoc, setActiveLoc] = useState(0);
@@ -18,8 +21,25 @@ const Occupancy = ({ active }) => {
 		(state) => state.occupancyReducer
 	);
 
-	const [timeRefreshed, setTimeRefreshed] = useState(moment());
-	const [refreshing, setRefreshing] = useState(false);
+	const configuredLocations = {
+		GreenspanMall: <GreenspanMall />,
+	};
+
+	const getLocationInfo = (id) => {
+		const temp = locations.filter(({ loc_id }) => loc_id === id)[0];
+		return temp;
+	};
+
+	const getLocInfo = (name = '') => {
+		const temp = locations.filter(
+			({ loc_name }) => removeSpaces(loc_name) === removeSpaces(name)
+		)[0].loc_id;
+
+		return temp;
+	};
+
+	// const [timeRefreshed, setTimeRefreshed] = useState(moment());
+	// const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
 		if (locations.length > 0) setActiveLoc(locations[0].loc_id);
@@ -51,43 +71,27 @@ const Occupancy = ({ active }) => {
 							</div>
 						</div>
 					}>
-					{/* {JSON.stringify(occupancyMap)} */}
-					<div>###############</div>
-					{JSON.stringify(locations)}
-
-					{/* <div className="occ-status">
-					<AppBtn
-						loading={refreshing}
-						className="occ-refresh-btn"
-						onClick={refreshStatus}
-						text="Refresh"
-						width="100px"
-					/>
-					<span>Refreshed {moment(timeRefreshed).fromNow()}</span>
-				</div> */}
-					{/* <div className="occ-parking-con">
-					<div className="occ-parking-lots">
-						{parkingMap.slice(7).map((c) => (
-							<ParkingLot
-								lot_name={c ? c.lot_name : '--'}
-								occupied={
-									c ? getLotStatus(c.lot_name) : 'pending'
+					{Object.keys(occupancyMap).map((val) =>
+						typeof occupancyMap[val] === 'string' ? (
+							<LotTest
+								loc_id={getLocInfo(val)}
+								active={getLocInfo(val) === activeLoc}
+								configure={() =>
+									toast.error(
+										`${getLocInfo(val)} configure first`
+									)
 								}
+								loc_name={val}
 							/>
-						))}
-					</div>
-					<div className="occ-parking-barrier"></div>
-					<div className="occ-parking-lots">
-						{parkingMap.slice(0, 7).map((c) => (
-							<ParkingLot
-								lot_name={c ? c.lot_name : '--'}
-								occupied={
-									c ? getLotStatus(c.lot_name) : 'pending'
-								}
+						) : (
+							<LotTest
+								loc_id={getLocInfo(val)}
+								active={getLocInfo(val) === activeLoc}
+								loc_name={val}
+								map={occupancyMap[val]}
 							/>
-						))}
-					</div>
-				</div> */}
+						)
+					)}
 				</BaseTab>
 			</Container>
 			<ModalLocation

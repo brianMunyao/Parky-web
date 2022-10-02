@@ -3,11 +3,11 @@ import { useFormik } from 'formik';
 import { Navigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import * as Yup from 'yup';
-import axios from 'axios';
 
 import FormItem from '../components/FormItem';
 import BaseForm from '../components/BaseForm';
 import { encrypt, isLoggedIn } from '../config/utils';
+import { login } from '../config/apis';
 
 const LoginScreen = () => {
 	const [cookies, setCookie] = useCookies(['user']);
@@ -29,14 +29,13 @@ const LoginScreen = () => {
 				password: encrypt(values.password),
 			};
 
-			axios
-				.post('/api/login', data)
+			login(data)
 				.then((res) => {
-					if (res.data.error) {
-						setFormError(res.data.error);
+					if (res.error) {
+						setFormError(res.error);
 					} else {
 						setFormError('');
-						setCookie('user', JSON.stringify(res.data.data));
+						setCookie('user', JSON.stringify(res.data));
 					}
 				})
 				.catch((err) => {

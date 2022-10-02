@@ -30,12 +30,12 @@ const BaseForm = ({ children, handleSubmit, type = 'login', error = '' }) => {
 					<p className="ls-account">
 						{type === 'login' ? (
 							<>
-								Don't have an account?
+								Don't have an account?{' '}
 								<Link to="/signup">Sign up</Link>
 							</>
 						) : (
 							<>
-								Already have an account?
+								Already have an account?{' '}
 								<Link to="/login">Login</Link>
 							</>
 						)}
