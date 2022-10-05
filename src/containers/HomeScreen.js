@@ -19,7 +19,7 @@ import AccessControl from './AccessControl';
 import UserHomeScreen from './UserHomeScreen';
 import { updateAppWidth } from '../store/mainSlice';
 import { getAccesses, getLocations, getParkingMap } from '../config/apis';
-import { updateAccesses } from '../store/accessesSlice';
+import { setAccesses } from '../store/accessesSlice';
 import { updateLocations, updateOccupancyMap } from '../store/occupancySlice';
 
 const pages = [
@@ -40,9 +40,7 @@ const HomeScreen = () => {
 		getAccesses()
 			.then((res) => {
 				if (res.data) {
-					dispatch(
-						updateAccesses(sortByDate(res.data, 'entry_time'))
-					);
+					dispatch(setAccesses(sortByDate(res.data, 'entry_time')));
 				} else {
 					toast.error(res.error);
 				}

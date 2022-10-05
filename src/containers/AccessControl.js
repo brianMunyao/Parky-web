@@ -3,22 +3,33 @@ import styled from 'styled-components';
 import { IoImageOutline } from 'react-icons/io5';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 
 import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
 import { getFee } from '../config/utils';
 import { vehicleEnter, vehicleEnterPut, vehicleExitPost } from '../config/apis';
 import FileUpload from '../components/FileUpload';
+import { addAccesses, updateAccesses } from '../store/accessesSlice';
 
 const AccessControl = ({ active }) => {
+	const dispatch = useDispatch();
+
 	const entry = (e) => {
 		const formData = new FormData();
 		formData.append('image', e.target.files[0]);
 		formData.append('entry_time', moment().toLocaleString());
 
 		vehicleEnter(formData)
-			.then((res) => console.log(res.data))
-			.catch((err) => console.log(err));
+			.then((res) => {
+				if (res.data) {
+					dispatch(addAccesses(res.data));
+					toast.success('Car entered');
+				} else {
+					toast.error(res.error);
+				}
+			})
+			.catch((err) => toast.error(err));
 	};
 
 	const exit = (e) => {
@@ -44,10 +55,10 @@ const AccessControl = ({ active }) => {
 
 				vehicleEnterPut(obj)
 					.then((res) => {
-						console.log(res);
 						if (res.error) {
 							toast.error(res.error);
 						} else {
+							dispatch(updateAccesses(res.data));
 							const { entry_time, exit_time, fee_paid } =
 								res.data;
 
