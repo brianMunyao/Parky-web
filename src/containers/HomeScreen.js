@@ -20,7 +20,7 @@ import UserHomeScreen from './UserHomeScreen';
 import { updateAppWidth } from '../store/mainSlice';
 import { getAccesses, getLocations, getParkingMap } from '../config/apis';
 import { setAccesses } from '../store/accessesSlice';
-import { updateLocations, updateOccupancyMap } from '../store/occupancySlice';
+import { setLocations, updateOccupancyMap } from '../store/occupancySlice';
 
 const pages = [
 	{ label: 'Dashboard', Page: DashBoard, Icon: HiOutlineTemplate },
@@ -45,17 +45,23 @@ const HomeScreen = () => {
 					toast.error(res.error);
 				}
 			})
-			.catch((err) => toast.error(`api call error, ${err}`));
+			.catch((err) =>
+				toast.error('Server unreachable. Try again later.')
+			);
 
 		getLocations()
-			.then((res) => dispatch(updateLocations(res.data)))
-			.catch((err) => console.log('Locations:', err));
+			.then((res) => dispatch(setLocations(res.data)))
+			.catch((err) =>
+				console.log('Server unreachable. Try again later.')
+			);
 
 		getParkingMap()
 			.then((res) => {
 				dispatch(updateOccupancyMap(res.data));
 			})
-			.catch((err) => console.log('Occupancy:', err));
+			.catch((err) =>
+				console.log('Server unreachable. Try again later.')
+			);
 	}, [dispatch]);
 
 	useEffect(() => {
@@ -101,7 +107,6 @@ const HomeScreen = () => {
 					onClick={() => alert('logout')}
 				/>
 			</nav>
-
 			<main>
 				<div className="main-inner">
 					{pages.map(({ Page }, i) => (

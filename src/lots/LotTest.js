@@ -1,30 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
 import { capitalize } from '../config/utils';
 import BaseLot from './BaseLot';
 import GreenspanMall from './GreenspanMall';
 
 const LotTest = ({ configure, loc_id, loc_name, active, map }) => {
-	if (configure)
-		return (
-			<BaseLot loc_id={loc_id} active={active} configure={configure} />
-		);
+	const [activeTab, setActiveTab] = useState(0);
 
+	// if (configure)
+	// 	return (
+	// 		<BaseLot loc_id={loc_id} active={active} configure={configure} />
+	// 	);
+
+	const getMap = (loc_n) => {
+		switch (loc_n) {
+			case 'GreenSpanMall':
+				return (
+					<BaseLot
+						setActiveTab={setActiveTab}
+						active={active}
+						activeTab={activeTab}>
+						<GreenspanMall
+							activeTab={activeTab}
+							// active={active}
+							parkingMap={map}
+						/>
+					</BaseLot>
+				);
+
+			default:
+				return (
+					<BaseLot
+						loc_id={loc_id}
+						active={active}
+						configure={configure}
+					/>
+				);
+		}
+	};
 	const temp_name = capitalize(loc_name).replace(/\s/g, '');
 
-	switch (temp_name) {
-		case 'GreenspanMall':
-			return <GreenspanMall active={active} parkingMap={map} />;
-
-		default:
-			return (
-				<BaseLot
-					loc_id={loc_id}
-					active={active}
-					configure={configure}
-				/>
-			);
-	}
+	return <Container>{getMap(temp_name)}</Container>;
 };
+
+const Container = styled.div`
+	.status-image {
+		width: 100%;
+		padding: 0 10%;
+		transition: all 0.2s linear;
+		@media (max-width: 1150px) {
+			padding: 0 5%;
+		}
+		@media (max-width: 900px) {
+			padding: 0;
+		}
+	}
+`;
 
 export default LotTest;

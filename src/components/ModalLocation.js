@@ -5,26 +5,27 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
+import { useCookies } from 'react-cookie';
 
 import colors from '../config/colors';
 import AppModal from './AppModal';
 import FormItem from './FormItem';
 import { addLocation } from '../config/apis';
-import { updateLocations } from '../store/occupancySlice';
+import { addNewLocation } from '../store/occupancySlice';
 import AppBtn from './AppBtn';
 
 const ModalLocation = ({ isOpen, onClose }) => {
 	const [submitting, setSubmitting] = useState(false);
 	const [formError, setFormError] = useState('');
+	const [cookies] = useCookies(['user']);
 
 	const dispatch = useDispatch();
 
 	const formik = useFormik({
-		initialValues: { location: '', prefix: '' },
+		initialValues: { location: '', prefix: '', admin_id: cookies.user.id },
 		validationSchema: Yup.object().shape({
 			location: Yup.string().required('Location required'),
 			prefix: Yup.string()
-
 				.min(2, 'Min of 2 characters')
 				.max(4, 'Max of 4 characters')
 				.required('Prefix required'),
@@ -38,7 +39,7 @@ const ModalLocation = ({ isOpen, onClose }) => {
 					if (res.error) {
 						setFormError(res.error);
 					} else {
-						// dispatch(updateLocations(res.data));
+						dispatch(addNewLocation(res.data));
 						toast.success('New Location added');
 						onClose();
 					}

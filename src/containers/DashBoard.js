@@ -2,26 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { IoCarOutline } from 'react-icons/io5';
 import { BiMoney } from 'react-icons//bi';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 import BaseTab from '../components/BaseTab';
 import DashStats from '../components/DashStats';
-import colors from '../config/colors';
-import { convertMoney } from '../config/utils';
+import {
+	convertMoney,
+	getFeeSum,
+	getMonthlyData,
+	getMonthlyTotals,
+} from '../config/utils';
 import AppBtnLink from '../components/AppBtnLink';
 import DashBoardMore from '../components/DashBoardMore';
 import AccessesRows from '../components/AccessesRows';
-
-const getRevenue = (arr = []) => {
-	let res = 0;
-	arr.forEach((v) => {
-		res += v.fee_paid;
-	});
-	return res;
-};
 
 const DashBoard = ({ active }) => {
 	const [revenue, setRevenue] = useState(0);
@@ -33,7 +26,7 @@ const DashBoard = ({ active }) => {
 	const viewLessAccesses = () => setMoreAccesses(false);
 
 	useEffect(() => {
-		setRevenue(getRevenue(accesses));
+		setRevenue(getFeeSum(accesses, 'fee_paid'));
 	}, [accesses]);
 
 	return (
@@ -55,9 +48,10 @@ const DashBoard = ({ active }) => {
 								title="Total Revenue"
 							/>
 							<DashStats
-								Icon={BiMoney}
-								amount={convertMoney(revenue)}
-								title="Total Revenue"
+								// Icon={BiMoney}
+								// amount={convertMoney(revenue)}
+								title="Monthly Revenue"
+								data={getMonthlyTotals(accesses)}
 							/>
 						</div>
 

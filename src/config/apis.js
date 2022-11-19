@@ -32,7 +32,7 @@ export const getAccesses = async () => {
 };
 
 export const getParkingMap = async () => {
-	const { data } = await axios.get('/api/parkingMap');
+	const { data } = await axios.get('/api/parking-map');
 	return data;
 };
 
@@ -47,7 +47,7 @@ export const addLocation = async (newLoc) => {
 };
 
 export const configureSpots = async (formData) => {
-	const { data } = await axios.post('/api/configureSpaces', formData, {
+	const { data } = await axios.post('/api/configure-spaces', formData, {
 		headers: { 'Content-Type': 'multipart/form-data' },
 	});
 

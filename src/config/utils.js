@@ -49,3 +49,52 @@ export const sortByDate = (arr = [], key, descending = true) => {
 
 	return arr.sort((a, b) => moment(a[key]).diff(b[key]));
 };
+
+export const getMonthlyData = (arr = [], key = 'entry_time') => {
+	let temp = {};
+
+	arr.forEach((acc) => {
+		const date = '01-' + moment(acc[key]).format('MM-YYYY');
+
+		if (Object.keys(temp).includes(date)) {
+			temp = { ...temp };
+			temp[date] = [...temp[date], acc];
+		} else {
+			temp[date] = [acc];
+		}
+	});
+
+	return temp;
+};
+
+export const getMonthlyTotals = (arr = [], key = 'fee_paid') => {
+	const monthlyData = getMonthlyData(arr);
+	const result = [];
+	console.log(monthlyData);
+
+	Object.keys(monthlyData).forEach((month) => {
+		const temp = {
+			name: month, //moment(month, 'DD-MM-YYYY').format('MMM'),
+			amount: getFeeSum(monthlyData[month], key),
+		};
+		result.push(temp);
+	});
+
+	let temp = result.sort((a, b) => moment(a.name).diff(b.name));
+
+	temp = temp.map((a) => ({
+		...a,
+		name: moment(a.name, 'DD-MM-YYYY').format('MMM'),
+	}));
+
+	return temp;
+};
+
+export const getFeeSum = (arr = [], key = 'fee_paid') => {
+	let res = 0;
+	arr.forEach((v) => {
+		res += v[key];
+	});
+
+	return res;
+};

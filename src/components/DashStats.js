@@ -1,17 +1,34 @@
 import React from 'react';
+import {
+	Bar,
+	BarChart,
+	Label,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+} from 'recharts';
 import styled from 'styled-components';
 
 import colors from '../config/colors';
 
-const DashStats = ({ Icon, amount = 0, title = '' }) => {
+const DashStats = ({ Icon, amount = 0, title = '', data }) => {
 	return (
 		<Container>
-			<div className="ds-icon-amount">
-				<div className="ds-icon">
-					<Icon color={colors.primaryBlue} size={20} />
+			{data ? (
+				<ResponsiveContainer>
+					<BarChart width={150} height={40} data={data}>
+						<Bar dataKey="amount" fill="#1894b6" label="name" />
+						<XAxis dataKey="name" />
+					</BarChart>
+				</ResponsiveContainer>
+			) : (
+				<div className="ds-icon-amount">
+					<div className="ds-icon">
+						<Icon color={colors.primaryBlue} size={20} />
+					</div>
+					<p className="ds-amount">{amount}</p>
 				</div>
-				<p className="ds-amount">{amount}</p>
-			</div>
+			)}
 			<p className="ds-title">{title}</p>
 		</Container>
 	);

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import Lottie from 'react-lottie';
 
 import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
@@ -12,6 +13,7 @@ import ModalLocation from '../components/ModalLocation';
 import GreenspanMall from '../lots/GreenspanMall';
 import { capitalize, removeSpaces } from '../config/utils';
 import LotTest from '../lots/LotTest';
+import * as animation from '../assets/circle_loading_blue.json';
 
 const Occupancy = ({ active }) => {
 	const [activeLoc, setActiveLoc] = useState(0);
@@ -22,7 +24,7 @@ const Occupancy = ({ active }) => {
 	);
 
 	const configuredLocations = {
-		GreenspanMall: <GreenspanMall />,
+		// GreenspanMall: <GreenspanMall />,
 	};
 
 	const getLocationInfo = (id) => {
@@ -31,11 +33,15 @@ const Occupancy = ({ active }) => {
 	};
 
 	const getLocInfo = (name = '') => {
-		const temp = locations.filter(
-			({ loc_name }) => removeSpaces(loc_name) === removeSpaces(name)
-		)[0].loc_id;
+		try {
+			const temp = locations.filter(
+				({ loc_name }) => removeSpaces(loc_name) === removeSpaces(name)
+			)[0].loc_id;
 
-		return temp;
+			return temp;
+		} catch (e) {
+			return null;
+		}
 	};
 
 	// const [timeRefreshed, setTimeRefreshed] = useState(moment());
@@ -71,25 +77,42 @@ const Occupancy = ({ active }) => {
 							</div>
 						</div>
 					}>
-					{Object.keys(occupancyMap).map((val) =>
-						typeof occupancyMap[val] === 'string' ? (
-							<LotTest
-								loc_id={getLocInfo(val)}
-								active={getLocInfo(val) === activeLoc}
-								configure={() =>
-									toast.error(
-										`${getLocInfo(val)} configure first`
-									)
-								}
-								loc_name={val}
+					{Object.keys(occupancyMap).length === 0 ? (
+						<>
+							<Lottie
+								width={150}
+								options={{
+									animationData: animation,
+									autoplay: true,
+									loop: true,
+									rendererSettings: {
+										preserveAspectRatio: 'xMidYMid slice',
+									},
+								}}
 							/>
-						) : (
-							<LotTest
-								loc_id={getLocInfo(val)}
-								active={getLocInfo(val) === activeLoc}
-								loc_name={val}
-								map={occupancyMap[val]}
-							/>
+							<p className="space-loading">
+								Checking space status...
+							</p>
+						</>
+					) : (
+						Object.keys(occupancyMap).map((val, i) =>
+							typeof occupancyMap[val] === 'string' ? (
+								<LotTest
+									key={i}
+									loc_id={getLocInfo(val)}
+									active={getLocInfo(val) === activeLoc}
+									configure={'not configured'}
+									loc_name={val}
+								/>
+							) : (
+								<LotTest
+									key={i}
+									loc_id={getLocInfo(val)}
+									active={getLocInfo(val) === activeLoc}
+									loc_name={val}
+									map={occupancyMap[val]}
+								/>
+							)
 						)
 					)}
 				</BaseTab>
@@ -172,6 +195,12 @@ const Container = styled.div`
 				/* background-color: $; */
 			}
 		}
+	}
+	.space-loading {
+		color: #858585;
+		text-align: center;
+		/* font-size: 15px; */
+		letter-spacing: 0.4px;
 	}
 
 	/* ?

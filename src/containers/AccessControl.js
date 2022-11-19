@@ -51,6 +51,7 @@ const AccessControl = ({ active }) => {
 					...res.data,
 					exit_time,
 					fee_paid: getFee(time_taken),
+					location: 12, //! REMOVE THIS
 				};
 
 				vehicleEnterPut(obj)

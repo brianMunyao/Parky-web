@@ -3,8 +3,16 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import FileUpload from '../components/FileUpload';
 import { configureSpots } from '../config/apis';
+import colors from '../config/colors';
 
-const BaseLot = ({ loc_id, active, children, configure }) => {
+const BaseLot = ({
+	loc_id,
+	active,
+	children,
+	configure,
+	activeTab,
+	setActiveTab,
+}) => {
 	const handleConfiguration = (e) => {
 		console.log('starting configuration', loc_id);
 		const formData = new FormData();
@@ -28,7 +36,34 @@ const BaseLot = ({ loc_id, active, children, configure }) => {
 					// subtitle="Sample image of the parking lot"
 				/>
 			) : (
-				children
+				<div>
+					<div className="bl-topbar">
+						<span
+							style={{
+								color:
+									activeTab === 0
+										? colors.primaryBlue
+										: 'grey',
+							}}
+							className="bl-topbar-options"
+							onClick={() => setActiveTab(0)}>
+							Mapping
+						</span>
+						<span
+							style={{
+								color:
+									activeTab === 1
+										? colors.primaryBlue
+										: 'grey',
+							}}
+							className="bl-topbar-options"
+							onClick={() => setActiveTab(1)}>
+							CCTV
+						</span>
+					</div>
+
+					<div className="bl-inner">{children}</div>
+				</div>
 			)}
 		</Container>
 	);
@@ -39,7 +74,18 @@ const Container = styled.div`
 	grid-template-rows: 1fr;
 	width: 100%;
 
-	.bl-config-con {
+	.bl-topbar {
+		margin: 10px 0 20px;
+		text-align: center;
+		.bl-topbar-options {
+			background: white;
+			cursor: pointer;
+			user-select: none;
+			padding: 5px 10px;
+			margin-right: 10px;
+			border-radius: 10px;
+			box-shadow: 10px 10px 10px #dadada2f;
+		}
 	}
 `;
 
