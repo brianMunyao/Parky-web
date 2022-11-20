@@ -71,3 +71,7 @@ export const login = async (user) => {
 	const { data } = await axios.post('/api/login', user);
 	return data;
 };
+export const updatePassword = async (obj) => {
+	const { data } = await axios.post('/api/users/update-password', obj);
+	return data;
+};

@@ -57,7 +57,7 @@ const ModalLocation = ({ isOpen, onClose }) => {
 			<Container>
 				<div className="ml-topbar">
 					<span>Add New Location</span>
-					<IoClose />
+					<IoClose onClick={onClose} />
 				</div>
 				<div className="ml-form-err">{formError}</div>
 				<form onSubmit={formik.handleSubmit}>
@@ -111,6 +111,7 @@ const Container = styled.div`
 		}
 		svg {
 			font-size: 20px;
+			cursor: pointer;
 		}
 	}
 	.ml-form-err {

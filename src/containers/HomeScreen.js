@@ -25,7 +25,7 @@ const pages = [
 	{ label: 'Dashboard', Page: DashBoard, Icon: HiOutlineTemplate },
 	{ label: 'Access Control', Page: AccessControl, Icon: TbBarrierBlock },
 	{ label: 'Occupancy', Page: Occupancy, Icon: GiGearStickPattern },
-	{ label: 'Settings', Page: Settings, Icon: HiOutlineCog },
+	// { label: 'Settings', Page: Settings, Icon: HiOutlineCog },
 ];
 
 const HomeScreen = () => {
