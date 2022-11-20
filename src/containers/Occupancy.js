@@ -53,13 +53,13 @@ const Occupancy = ({ active }) => {
 	useEffect(() => {
 		if (locations.length > 0) setActiveLoc(locations[0].loc_id);
 
-		// getParkingMap()
-		// 	.then((res) => {
-		// 		dispatch(updateOccupancyMap(res.data));
-		// 	})
-		// 	.catch((err) =>
-		// 		console.log('Server unreachable. Try again later.')
-		// 	);
+		getParkingMap()
+			.then((res) => {
+				dispatch(updateOccupancyMap(res.data));
+			})
+			.catch((err) =>
+				console.log('Server unreachable. Try again later.')
+			);
 	}, [locations, dispatch]);
 
 	return (
