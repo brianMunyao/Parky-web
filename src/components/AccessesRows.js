@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { convertMoney } from '../config/utils';
+import { capitalize, convertMoney } from '../config/utils';
 
 const AccessesRows = ({ data = [] }) => {
 	const { appWidth } = useSelector((state) => state.mainReducer);
@@ -13,7 +13,7 @@ const AccessesRows = ({ data = [] }) => {
 			{appWidth > 500 ? (
 				<table id="db-a-tbl">
 					<tr>
-						<th className="db-a-model">Car Model</th>
+						<th className="db-a-location">Location</th>
 						<th className="db-a-license">
 							{appWidth > 650 ? 'License Plate' : 'Plate No.'}
 						</th>
@@ -24,7 +24,11 @@ const AccessesRows = ({ data = [] }) => {
 
 					{data.map((acc) => (
 						<tr className="db-a-info">
-							<td className="db-a-model">{acc.model}</td>
+							<td className="db-a-location">
+								{appWidth > 820
+									? capitalize(acc.loc_name)
+									: acc.prefix}
+							</td>
 							<td className="db-a-license">{acc.license}</td>
 							<td className="db-a-entry">
 								{moment(acc.entry_time).format('MMM DD HH:mm')}
@@ -47,8 +51,8 @@ const AccessesRows = ({ data = [] }) => {
 					{data.map((acc) => (
 						<tr className="db-mob-top-tr db-a-info">
 							<tr>
-								<th>Model</th>
-								<td>{acc.model}</td>
+								<th>Location</th>
+								<td>{capitalize(acc.loc_name)}</td>
 							</tr>
 							<tr>
 								<th>Plate No.</th>
@@ -128,12 +132,6 @@ const Container = styled.div`
 		}
 		.db-a-pending {
 			color: #aeaeae;
-		}
-
-		@media (max-width: 650px) {
-			.db-a-model {
-				display: none;
-			}
 		}
 	}
 

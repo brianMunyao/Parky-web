@@ -1,36 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import moment from 'moment';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+// import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+// import { toast } from 'react-toastify';
 import Lottie from 'react-lottie';
 
 import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
-import ParkingLot from '../components/ParkingLot';
+// import ParkingLot from '../components/ParkingLot';
 import AppBtn from '../components/AppBtn';
 import ModalLocation from '../components/ModalLocation';
-import GreenspanMall from '../lots/GreenspanMall';
-import { capitalize, removeSpaces } from '../config/utils';
+// import GreenspanMall from '../lots/GreenspanMall';
+import { removeSpaces } from '../config/utils';
 import LotTest from '../lots/LotTest';
 import * as animation from '../assets/circle_loading_blue.json';
+import { getParkingMap } from '../config/apis';
+import { updateOccupancyMap } from '../store/occupancySlice';
 
 const Occupancy = ({ active }) => {
 	const [activeLoc, setActiveLoc] = useState(0);
 	const [modalOpen, setModalOpen] = useState(false);
 
+	const dispatch = useDispatch();
 	const { locations, occupancyMap } = useSelector(
 		(state) => state.occupancyReducer
 	);
 
-	const configuredLocations = {
-		// GreenspanMall: <GreenspanMall />,
-	};
+	// const configuredLocations = {
+	// 	// GreenspanMall: <GreenspanMall />,
+	// };
 
-	const getLocationInfo = (id) => {
-		const temp = locations.filter(({ loc_id }) => loc_id === id)[0];
-		return temp;
-	};
+	// const getLocationInfo = (id) => {
+	// 	const temp = locations.filter(({ loc_id }) => loc_id === id)[0];
+	// 	return temp;
+	// };
 
 	const getLocInfo = (name = '') => {
 		try {
@@ -49,7 +52,15 @@ const Occupancy = ({ active }) => {
 
 	useEffect(() => {
 		if (locations.length > 0) setActiveLoc(locations[0].loc_id);
-	}, [locations]);
+
+		// getParkingMap()
+		// 	.then((res) => {
+		// 		dispatch(updateOccupancyMap(res.data));
+		// 	})
+		// 	.catch((err) =>
+		// 		console.log('Server unreachable. Try again later.')
+		// 	);
+	}, [locations, dispatch]);
 
 	return (
 		<>

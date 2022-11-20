@@ -26,13 +26,17 @@ export const vehicleEnterPut = async (obj) => {
 //
 //
 
-export const getAccesses = async () => {
-	const { data } = await axios.get('/api/accesses');
+export const getAccesses = async (id) => {
+	const { data } = await axios.get(`/api/accesses/${id}`);
 	return data;
 };
 
 export const getParkingMap = async () => {
 	const { data } = await axios.get('/api/parking-map');
+	return data;
+};
+export const getLocationImage = async (prefix) => {
+	const { data } = await axios.get(`/api/location/image/${prefix}`);
 	return data;
 };
 

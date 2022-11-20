@@ -2,7 +2,8 @@ import md5 from 'md5';
 import moment from 'moment';
 
 export const isLoggedIn = (cookies) => {
-	if (cookies.user === undefined) return false;
+	if (cookies.user === undefined || typeof cookies.user === 'string')
+		return false;
 	return true;
 };
 
@@ -70,7 +71,6 @@ export const getMonthlyData = (arr = [], key = 'entry_time') => {
 export const getMonthlyTotals = (arr = [], key = 'fee_paid') => {
 	const monthlyData = getMonthlyData(arr);
 	const result = [];
-	console.log(monthlyData);
 
 	Object.keys(monthlyData).forEach((month) => {
 		const temp = {

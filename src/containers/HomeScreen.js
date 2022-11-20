@@ -16,11 +16,10 @@ import DashBoard from './DashBoard';
 import Settings from './Settings';
 import Occupancy from './Occupancy';
 import AccessControl from './AccessControl';
-import UserHomeScreen from './UserHomeScreen';
 import { updateAppWidth } from '../store/mainSlice';
-import { getAccesses, getLocations, getParkingMap } from '../config/apis';
+import { getAccesses, getLocations } from '../config/apis';
 import { setAccesses } from '../store/accessesSlice';
-import { setLocations, updateOccupancyMap } from '../store/occupancySlice';
+import { setLocations } from '../store/occupancySlice';
 
 const pages = [
 	{ label: 'Dashboard', Page: DashBoard, Icon: HiOutlineTemplate },
@@ -30,39 +29,35 @@ const pages = [
 ];
 
 const HomeScreen = () => {
-	const [cookies] = useCookies(['user']);
+	const [cookies, removeCookie] = useCookies(['user']);
 	const [activeTab, setActiveTab] = useState(0);
 
 	const { appWidth } = useSelector((state) => state.mainReducer);
 	const dispatch = useDispatch();
 
 	const initialFetch = useCallback(() => {
-		getAccesses()
-			.then((res) => {
-				if (res.data) {
-					dispatch(setAccesses(sortByDate(res.data, 'entry_time')));
-				} else {
-					toast.error(res.error);
-				}
-			})
-			.catch((err) =>
-				toast.error('Server unreachable. Try again later.')
-			);
+		if (isLoggedIn(cookies)) {
+			getAccesses(cookies.user.id)
+				.then((res) => {
+					if (res.data) {
+						dispatch(
+							setAccesses(sortByDate(res.data, 'entry_time'))
+						);
+					} else {
+						toast.error(res.error);
+					}
+				})
+				.catch((err) =>
+					toast.error('Server unreachable. Try again later.')
+				);
 
-		getLocations()
-			.then((res) => dispatch(setLocations(res.data)))
-			.catch((err) =>
-				console.log('Server unreachable. Try again later.')
-			);
-
-		getParkingMap()
-			.then((res) => {
-				dispatch(updateOccupancyMap(res.data));
-			})
-			.catch((err) =>
-				console.log('Server unreachable. Try again later.')
-			);
-	}, [dispatch]);
+			getLocations()
+				.then((res) => dispatch(setLocations(res.data)))
+				.catch((err) =>
+					console.log('Server unreachable. Try again later.')
+				);
+		}
+	}, [dispatch, cookies]);
 
 	useEffect(() => {
 		dispatch(updateAppWidth(window.innerWidth));
@@ -77,7 +72,7 @@ const HomeScreen = () => {
 
 	return !isLoggedIn(cookies) ? (
 		<Navigate to="/login" />
-	) : cookies.user.role === 'admin' ? (
+	) : (
 		<Container>
 			<nav>
 				<div>
@@ -104,7 +99,7 @@ const HomeScreen = () => {
 					key={pages.length + 1}
 					label="Log Out"
 					Icon={IoPower}
-					onClick={() => alert('logout')}
+					onClick={() => removeCookie('user')}
 				/>
 			</nav>
 			<main>
@@ -115,8 +110,6 @@ const HomeScreen = () => {
 				</div>
 			</main>
 		</Container>
-	) : (
-		<UserHomeScreen />
 	);
 };
 

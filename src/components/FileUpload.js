@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import { BsImageFill } from 'react-icons/bs';
 
 import colors from '../config/colors';
+import Lottie from 'react-lottie';
+import * as animation from '../assets/processing-loading.json';
 
 const FileUpload = ({
+	loading,
 	name,
 	title = 'Browse for files',
 	subtitle = 'Supports jpg, png, jpeg',
@@ -14,17 +17,34 @@ const FileUpload = ({
 		<Container>
 			<label htmlFor={name}>
 				<div className="fu-inner">
-					<input
-						type="file"
-						name={name}
-						id={name}
-						onChange={onChange}
-					/>
+					{loading ? (
+						<Lottie
+							style={{ position: 'absolute' }}
+							width={300}
+							options={{
+								animationData: animation,
+								autoplay: true,
+								loop: true,
+								rendererSettings: {
+									preserveAspectRatio: 'xMidYMid slice',
+								},
+							}}
+						/>
+					) : (
+						<>
+							<input
+								type="file"
+								name={name}
+								id={name}
+								onChange={onChange}
+							/>
 
-					<BsImageFill />
+							<BsImageFill />
 
-					<p className="fu-title">{title}</p>
-					<p className="fu-subtitle">{subtitle}</p>
+							<p className="fu-title">{title}</p>
+							<p className="fu-subtitle">{subtitle}</p>
+						</>
+					)}
 				</div>
 			</label>
 		</Container>
@@ -33,6 +53,8 @@ const FileUpload = ({
 
 const Container = styled.div`
 	.fu-inner {
+		height: 100%;
+		width: 100%;
 		position: relative;
 		display: flex;
 		flex-direction: column;

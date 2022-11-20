@@ -30,7 +30,7 @@ const SignUpScreen = () => {
 				...values,
 				password: encrypt(values.password),
 				joined_on: moment().toLocaleString(),
-				role: 'user', //! CHANGE THIS LATER
+				role: 'admin',
 			};
 
 			register(data)
