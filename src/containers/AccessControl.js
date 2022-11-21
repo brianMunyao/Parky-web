@@ -8,7 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
 import { capitalize, getFee } from '../config/utils';
-import { vehicleEnter, vehicleEnterPut, vehicleExitPost } from '../config/apis';
+import {
+	sendSMS,
+	vehicleEnter,
+	vehicleEnterPut,
+	vehicleExitPost,
+} from '../config/apis';
 import FileUpload from '../components/FileUpload';
 import { addAccesses, updateAccesses } from '../store/accessesSlice';
 import AccessLocationCard from '../components/AccessLocationCard';
@@ -56,8 +61,14 @@ const AccessControl = ({ active }) => {
 				if (res.error) {
 					toast.error(res.error);
 				} else {
-					const { entry_time, access_id, owner_id, balance } =
-						res.data;
+					const {
+						entry_time,
+						access_id,
+						owner_id,
+						balance,
+						phoneNumber,
+						fullname,
+					} = res.data;
 
 					const time_taken = moment(exit_time).diff(
 						moment(entry_time),
@@ -67,7 +78,17 @@ const AccessControl = ({ active }) => {
 					const fee_to_pay = getFee(time_taken);
 
 					if (balance < fee_to_pay) {
-						toast.error('Balance not adequate');
+						sendSMS(
+							`+${phoneNumber}`,
+							`Hello ${fullname}, your Parky balance is insuffient.`
+						).then((res) => {
+							if (res.data) {
+								toast.info('Alerted user to add funds');
+							} else {
+								toast.error(res.error);
+							}
+						});
+						// toast.error('Balance not adequate');
 					} else {
 						const obj = {
 							exit_time,

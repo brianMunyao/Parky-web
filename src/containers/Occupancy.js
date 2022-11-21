@@ -21,6 +21,8 @@ const Occupancy = ({ active }) => {
 	const [activeLoc, setActiveLoc] = useState(0);
 	const [modalOpen, setModalOpen] = useState(false);
 
+	const [getMap, setGetMap] = useState(true);
+
 	const dispatch = useDispatch();
 	const { locations, occupancyMap } = useSelector(
 		(state) => state.occupancyReducer
@@ -53,14 +55,17 @@ const Occupancy = ({ active }) => {
 	useEffect(() => {
 		if (locations.length > 0) setActiveLoc(locations[0].loc_id);
 
-		getParkingMap()
-			.then((res) => {
-				dispatch(updateOccupancyMap(res.data));
-			})
-			.catch((err) =>
-				console.log('Server unreachable. Try again later.')
-			);
-	}, [locations, dispatch]);
+		if (getMap) {
+			setGetMap(false);
+			getParkingMap()
+				.then((res) => {
+					dispatch(updateOccupancyMap(res.data));
+				})
+				.catch((err) =>
+					console.log('Server unreachable. Try again later.')
+				);
+		}
+	}, [locations, dispatch, getMap]);
 
 	return (
 		<>

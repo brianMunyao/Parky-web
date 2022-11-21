@@ -58,6 +58,12 @@ export const configureSpots = async (formData) => {
 	return data;
 };
 
+export const sendSMS = async (to, message) => {
+	const { data } = await axios.post('/api/send-sms', { to, message });
+
+	return data;
+};
+
 //
 //
 //
