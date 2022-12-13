@@ -19,15 +19,29 @@ import AccessesRows from '../components/AccessesRows';
 const DashBoard = ({ active }) => {
 	const [revenue, setRevenue] = useState(0);
 	const [moreAccesses, setMoreAccesses] = useState(false);
+	const [parkingSpaces, setParkingSpaces] = useState(0);
 
 	const { accesses } = useSelector((state) => state.accessesReducer);
+	const { occupancyMap } = useSelector((state) => state.occupancyReducer);
 
 	const viewMoreAccesses = () => setMoreAccesses(true);
 	const viewLessAccesses = () => setMoreAccesses(false);
 
 	useEffect(() => {
 		setRevenue(getFeeSum(accesses, 'fee_paid'));
-	}, [accesses]);
+
+		if (Object.keys(occupancyMap).length > 0) {
+			let num = 0;
+			Object.entries(occupancyMap).forEach((loc) => {
+				if (typeof loc[1] !== 'string') {
+					loc[1].status.forEach((lot) => {
+						if (!lot.occupied) num += 1;
+					});
+				}
+			});
+			setParkingSpaces(num);
+		}
+	}, [accesses, occupancyMap]);
 
 	return (
 		<Container>
@@ -39,7 +53,7 @@ const DashBoard = ({ active }) => {
 						<div className="db-topbar">
 							<DashStats
 								Icon={IoCarOutline}
-								amount="16 / 25"
+								amount={`${parkingSpaces} / 25`}
 								title="Parking Space Available"
 							/>
 							<DashStats
