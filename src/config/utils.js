@@ -98,3 +98,12 @@ export const getFeeSum = (arr = [], key = 'fee_paid') => {
 
 	return res;
 };
+
+export const getTimeDiff = (time1, time2) => {
+	const diff = moment(time1).diff(time2, 'milliseconds');
+
+	if (diff > 1000) {
+		return `${diff / 1000} secs`;
+	}
+	return `${diff} ms`;
+};

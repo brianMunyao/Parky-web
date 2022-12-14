@@ -64,6 +64,14 @@ export const sendSMS = async (to, message) => {
 	return data;
 };
 
+export const testDevTools = async (formData) => {
+	const { data } = await axios.post('/api/dev-tools', formData, {
+		headers: { 'Content-Type': 'multipart/form-data' },
+	});
+
+	return data;
+};
+
 //
 //
 //

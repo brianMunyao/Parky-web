@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IoArrowBack, IoImageOutline } from 'react-icons/io5';
+import { IoArrowBack } from 'react-icons/io5';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 
-import colors from '../config/colors';
 import BaseTab from '../components/BaseTab';
 import { capitalize, getFee } from '../config/utils';
 import {

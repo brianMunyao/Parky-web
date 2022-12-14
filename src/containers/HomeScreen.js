@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { GiGearStickPattern } from 'react-icons/gi';
 import { TbBarrierBlock } from 'react-icons/tb';
-import { HiOutlineTemplate, HiOutlineCog } from 'react-icons/hi';
+import { HiOutlineTemplate, HiCode } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import { IoPower } from 'react-icons/io5';
 import { toast } from 'react-toastify';
@@ -20,6 +20,7 @@ import { updateAppWidth } from '../store/mainSlice';
 import { getAccesses, getLocations } from '../config/apis';
 import { setAccesses } from '../store/accessesSlice';
 import { setLocations } from '../store/occupancySlice';
+import DevTools from './DevTools';
 
 const pages = [
 	{ label: 'Dashboard', Page: DashBoard, Icon: HiOutlineTemplate },
@@ -94,19 +95,29 @@ const HomeScreen = () => {
 					))}
 				</div>
 
-				<NavItem
-					logout
-					key={pages.length + 1}
-					label="Log Out"
-					Icon={IoPower}
-					onClick={() => removeCookie('user')}
-				/>
+				<div>
+					<NavItem
+						dev
+						active={activeTab === pages.length + 1}
+						label="Developer Tools"
+						Icon={HiCode}
+						onClick={() => changeTab(pages.length + 1)}
+					/>
+					<NavItem
+						logout
+						key={pages.length + 2}
+						label="Log Out"
+						Icon={IoPower}
+						onClick={() => removeCookie('user')}
+					/>
+				</div>
 			</nav>
 			<main>
 				<div className="main-inner">
 					{pages.map(({ Page }, i) => (
 						<Page active={i === activeTab} />
 					))}
+					<DevTools active={pages.length + 1 === activeTab} />
 				</div>
 			</main>
 		</Container>
