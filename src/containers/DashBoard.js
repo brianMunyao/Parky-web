@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IoCarOutline } from 'react-icons/io5';
 import { BiMoney } from 'react-icons//bi';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import BaseTab from '../components/BaseTab';
 import DashStats from '../components/DashStats';
@@ -15,31 +16,43 @@ import {
 import AppBtnLink from '../components/AppBtnLink';
 import DashBoardMore from '../components/DashBoardMore';
 import AccessesRows from '../components/AccessesRows';
+import { getParkingStatus } from '../config/apis';
+import { updateOccupancyMap } from '../store/occupancySlice';
 
 const DashBoard = ({ active }) => {
 	const [revenue, setRevenue] = useState(0);
 	const [moreAccesses, setMoreAccesses] = useState(false);
 	const [parkingSpaces, setParkingSpaces] = useState(0);
+	const [parkingSpacesTotal, setParkingSpacesTotal] = useState(0);
+	const [response, setResponse] = useState('');
 
 	const { accesses } = useSelector((state) => state.accessesReducer);
 	const { occupancyMap } = useSelector((state) => state.occupancyReducer);
 
+	// const dispatch = useDispatch();
+
 	const viewMoreAccesses = () => setMoreAccesses(true);
 	const viewLessAccesses = () => setMoreAccesses(false);
 
+	// const getImg = () => {};
+
 	useEffect(() => {
-		setRevenue(getFeeSum(accesses, 'fee_paid'));
+		setRevenue(getFeeSum(accesses, 'amount'));
 
 		if (Object.keys(occupancyMap).length > 0) {
-			let num = 0;
+			let available = 0;
+			let total = 0;
+
 			Object.entries(occupancyMap).forEach((loc) => {
 				if (typeof loc[1] !== 'string') {
 					loc[1].status.forEach((lot) => {
-						if (!lot.occupied) num += 1;
+						if (!lot.occupied) available += 1;
+						total += 1;
 					});
 				}
 			});
-			setParkingSpaces(num);
+			setParkingSpaces(available);
+			setParkingSpacesTotal(total);
 		}
 	}, [accesses, occupancyMap]);
 
@@ -50,10 +63,16 @@ const DashBoard = ({ active }) => {
 					<DashBoardMore goBack={viewLessAccesses} />
 				) : (
 					<div className="db-main">
+						{/* <button onClick={getImg}>refresh</button> */}
+						{/* <img
+							className="status-image"
+							src={`data:image/jpeg;base64,${response['GreenSpan Mall'].img}`}
+							alt="lot_image"
+						/> */}
 						<div className="db-topbar">
 							<DashStats
 								Icon={IoCarOutline}
-								amount={`${parkingSpaces} / 25`}
+								amount={`${parkingSpaces} / ${parkingSpacesTotal}`}
 								title="Parking Space Available"
 							/>
 							<DashStats

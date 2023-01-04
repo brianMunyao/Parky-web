@@ -4,14 +4,16 @@ import styled from 'styled-components';
 import { capitalize } from '../config/utils';
 import BaseLot from './BaseLot';
 import GreenspanMall from './GreenspanMall';
+import BraveComplex from './BraveComplex';
 
 const LotTest = ({ configure, loc_id, loc_name, active, map }) => {
 	const [activeTab, setActiveTab] = useState(0);
 
-	// if (configure)
-	// 	return (
-	// 		<BaseLot loc_id={loc_id} active={active} configure={configure} />
-	// 	);
+	if (configure) {
+		return (
+			<BaseLot loc_id={loc_id} active={active} configure={configure} />
+		);
+	}
 
 	const getMap = (loc_n) => {
 		switch (loc_n) {
@@ -22,6 +24,20 @@ const LotTest = ({ configure, loc_id, loc_name, active, map }) => {
 						active={active}
 						activeTab={activeTab}>
 						<GreenspanMall
+							activeTab={activeTab}
+							// active={active}
+							parkingMap={map}
+						/>
+					</BaseLot>
+				);
+
+			case 'BraveComplex':
+				return (
+					<BaseLot
+						setActiveTab={setActiveTab}
+						active={active}
+						activeTab={activeTab}>
+						<BraveComplex
 							activeTab={activeTab}
 							// active={active}
 							parkingMap={map}

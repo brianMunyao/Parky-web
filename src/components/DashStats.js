@@ -19,6 +19,7 @@ const DashStats = ({ Icon, amount = 0, title = '', data }) => {
 					<BarChart width={150} height={40} data={data}>
 						<Bar dataKey="amount" fill="#1894b6" label="name" />
 						<XAxis dataKey="name" />
+						<Tooltip />
 					</BarChart>
 				</ResponsiveContainer>
 			) : (

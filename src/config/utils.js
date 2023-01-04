@@ -68,7 +68,7 @@ export const getMonthlyData = (arr = [], key = 'entry_time') => {
 	return temp;
 };
 
-export const getMonthlyTotals = (arr = [], key = 'fee_paid') => {
+export const getMonthlyTotals = (arr = [], key = 'amount') => {
 	const monthlyData = getMonthlyData(arr);
 	const result = [];
 
@@ -90,7 +90,7 @@ export const getMonthlyTotals = (arr = [], key = 'fee_paid') => {
 	return temp;
 };
 
-export const getFeeSum = (arr = [], key = 'fee_paid') => {
+export const getFeeSum = (arr = [], key = 'amount') => {
 	let res = 0;
 	arr.forEach((v) => {
 		res += v[key];

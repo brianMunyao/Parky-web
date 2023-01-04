@@ -14,14 +14,15 @@ import ModalLocation from '../components/ModalLocation';
 import { removeSpaces } from '../config/utils';
 import LotTest from '../lots/LotTest';
 import * as animation from '../assets/circle_loading_blue.json';
-import { getParkingMap } from '../config/apis';
+import { getParkingMap, getParkingStatus } from '../config/apis';
 import { updateOccupancyMap } from '../store/occupancySlice';
+import { toast } from 'react-toastify';
 
 const Occupancy = ({ active }) => {
 	const [activeLoc, setActiveLoc] = useState(0);
 	const [modalOpen, setModalOpen] = useState(false);
 
-	const [getMap, setGetMap] = useState(true);
+	// const [getMap, setGetMap] = useState(true);
 
 	const dispatch = useDispatch();
 	const { locations, occupancyMap } = useSelector(
@@ -37,17 +38,17 @@ const Occupancy = ({ active }) => {
 	// 	return temp;
 	// };
 
-	const getLocInfo = (name = '') => {
-		try {
-			const temp = locations.filter(
-				({ loc_name }) => removeSpaces(loc_name) === removeSpaces(name)
-			)[0].loc_id;
+	// const getLocInfo = (name = '') => {
+	// 	try {
+	// 		const temp = locations.filter(
+	// 			({ loc_name }) => removeSpaces(loc_name) === removeSpaces(name)
+	// 		)[0].loc_id;
 
-			return temp;
-		} catch (e) {
-			return null;
-		}
-	};
+	// 		return temp;
+	// 	} catch (e) {
+	// 		return null;
+	// 	}
+	// };
 
 	// const [timeRefreshed, setTimeRefreshed] = useState(moment());
 	// const [refreshing, setRefreshing] = useState(false);
@@ -55,17 +56,26 @@ const Occupancy = ({ active }) => {
 	useEffect(() => {
 		if (locations.length > 0) setActiveLoc(locations[0].loc_id);
 
-		if (getMap) {
-			setGetMap(false);
-			getParkingMap()
+		const timer = setInterval(() => {
+			getParkingStatus()
 				.then((res) => {
-					dispatch(updateOccupancyMap(res.data));
+					dispatch(updateOccupancyMap(res));
+					// toast.success('Parking status updated');
 				})
-				.catch((err) =>
-					console.log('Server unreachable. Try again later.')
-				);
-		}
-	}, [locations, dispatch, getMap]);
+				.catch((err) => toast.error('Server Error. Try Again Later.'));
+		}, 20000);
+
+		// if (getMap) {
+		// 	setGetMap(false);
+		// 	// getParkingMap()
+		// 	// 	.then((res) => {
+		// 	// 		dispatch(updateOccupancyMap(res.data));
+		// 	// 	})
+		// 	// 	.catch((err) =>
+		// 	// 		console.log('Server unreachable. Try again later.')
+		// 	// 	);
+		// }
+	}, [locations, dispatch]);
 
 	return (
 		<>
@@ -111,22 +121,22 @@ const Occupancy = ({ active }) => {
 							</p>
 						</>
 					) : (
-						Object.keys(occupancyMap).map((val, i) =>
-							typeof occupancyMap[val] === 'string' ? (
+						locations.map(({ loc_id, loc_name }, i) =>
+							Object.keys(occupancyMap).includes(loc_name) ? (
 								<LotTest
 									key={i}
-									loc_id={getLocInfo(val)}
-									active={getLocInfo(val) === activeLoc}
-									configure={'not configured'}
-									loc_name={val}
+									loc_id={loc_id}
+									active={loc_id === activeLoc}
+									loc_name={loc_name}
+									map={occupancyMap[loc_name]}
 								/>
 							) : (
 								<LotTest
 									key={i}
-									loc_id={getLocInfo(val)}
-									active={getLocInfo(val) === activeLoc}
-									loc_name={val}
-									map={occupancyMap[val]}
+									loc_id={loc_id}
+									active={loc_id === activeLoc}
+									configure={'not configured'}
+									loc_name={loc_name}
 								/>
 							)
 						)
@@ -235,10 +245,7 @@ const Container = styled.div`
 
 	.occ-parking-con {
 		border-radius: 3px;
-		height: 350px;
-		display: grid;
-		grid-template-columns: 1fr;
-		grid-template-rows: 1fr 20px 1fr;
+		/* height: 350px; */
 		padding: 0 100px;
 		transition: all 0.2s linear;
 
@@ -250,23 +257,7 @@ const Container = styled.div`
 		}
 		@media (max-width: 800px) {
 			padding: 0 0;
-			height: 250px;
-		}
-
-		.occ-parking-lots {
-			display: grid;
-			grid-template-rows: 100%;
-			grid-template-columns: repeat(7, 1fr);
-			gap: 5px;
-			.occ-parking-lot {
-			}
-		}
-		.occ-parking-barrier {
-			background: #cbcbcb;
-			width: 100%;
-			height: 4px;
-			margin: auto 0;
-			border-radius: 10px;
+			height: 400px;
 		}
 	}
 `;

@@ -91,7 +91,7 @@ const AccessControl = ({ active }) => {
 					} else {
 						const obj = {
 							exit_time,
-							fee_paid: fee_to_pay,
+							amount: fee_to_pay,
 							access_id,
 							owner_id,
 						};
@@ -102,7 +102,7 @@ const AccessControl = ({ active }) => {
 									toast.error(res.error);
 								} else {
 									dispatch(updateAccesses(res.data));
-									const { entry_time, exit_time, fee_paid } =
+									const { entry_time, exit_time, amount } =
 										res.data;
 
 									toast.success(
@@ -110,7 +110,7 @@ const AccessControl = ({ active }) => {
 											'HH:MM:SS'
 										)}, To: ${moment(exit_time).format(
 											'HH:MM:SS'
-										)}, Time taken: ${time_taken}, Fee Paid: ${fee_paid}`
+										)}, Time taken: ${time_taken}, Fee Paid: ${amount}`
 									);
 								}
 							})

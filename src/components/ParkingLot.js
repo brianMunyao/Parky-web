@@ -4,12 +4,21 @@ import styled from 'styled-components';
 import colors from '../config/colors';
 import car from '../assets/car-top.png';
 
-const ParkingLot = ({ occupied, lot_name }) => {
+const ParkingLot = ({ occupied, lot_name, rotate }) => {
 	return (
 		<Container occupied={occupied} className="occ-parking-lot">
 			<div className="occ-parking-lot-inner">
 				{occupied ? (
-					<img src={car} alt="car" />
+					<img
+						className="occ-image"
+						src={car}
+						alt="car"
+						style={{
+							transform: rotate
+								? 'rotate(180deg) translate(10px, -15px)'
+								: '',
+						}}
+					/>
 				) : (
 					<span className="lot-name">{lot_name}</span>
 				)}
@@ -41,8 +50,8 @@ const Container = styled.div`
 		position: relative;
 	}
 
-	img {
-		height: 50px;
+	.occ-image {
+		height: 40px;
 		rotate: 90deg;
 		position: absolute;
 		left: 30%;

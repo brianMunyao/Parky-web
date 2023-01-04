@@ -41,7 +41,7 @@ const AccessesRows = ({ data = [] }) => {
 								)}
 							</td>
 							<td className="db-a-fee_paid">
-								{convertMoney(acc.fee_paid)}
+								{convertMoney(acc.amount || 0)}
 							</td>
 						</tr>
 					))}
@@ -77,7 +77,7 @@ const AccessesRows = ({ data = [] }) => {
 							</tr>
 							<tr>
 								<th>Fee Paid</th>
-								<td>{convertMoney(acc.fee_paid)}</td>
+								<td>{convertMoney(acc.amount || 0)}</td>
 							</tr>
 						</tr>
 					))}

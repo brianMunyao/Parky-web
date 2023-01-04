@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const url = (route = '') => `http://localhost:5000${route}`;
+
 export const vehicleEnter = async (formData) => {
-	const { data } = await axios.post('/api/vehicle/enter', formData, {
+	const { data } = await axios.post(url('/api/vehicle/enter'), formData, {
 		headers: { 'Content-Type': 'multipart/form-data' },
 	});
 
@@ -9,7 +11,7 @@ export const vehicleEnter = async (formData) => {
 };
 
 export const vehicleExitPost = async (formData) => {
-	const { data } = await axios.post('/api/vehicle/exit', formData, {
+	const { data } = await axios.post(url('/api/vehicle/exit'), formData, {
 		headers: { 'Content-Type': 'multipart/form-data' },
 	});
 
@@ -17,7 +19,7 @@ export const vehicleExitPost = async (formData) => {
 };
 
 export const vehicleEnterPut = async (obj) => {
-	const { data } = await axios.put('/api/vehicle/exit', obj);
+	const { data } = await axios.put(url('/api/vehicle/exit'), obj);
 
 	return data;
 };
@@ -27,31 +29,31 @@ export const vehicleEnterPut = async (obj) => {
 //
 
 export const getAccesses = async (id) => {
-	const { data } = await axios.get(`/api/accesses/${id}`);
+	const { data } = await axios.get(url(`/api/accesses/${id}`));
 	return data;
 };
 
 export const getParkingMap = async () => {
-	const { data } = await axios.get('/api/parking-map');
+	const { data } = await axios.get(url('/api/parking-map'));
 	return data;
 };
 export const getLocationImage = async (prefix) => {
-	const { data } = await axios.get(`/api/location/image/${prefix}`);
+	const { data } = await axios.get(url(`/api/location/image/${prefix}`));
 	return data;
 };
 
 export const getLocations = async () => {
-	const { data } = await axios.get('/api/locations');
+	const { data } = await axios.get(url('/api/locations'));
 	return data;
 };
 
 export const addLocation = async (newLoc) => {
-	const { data } = await axios.post('/api/locations', newLoc);
+	const { data } = await axios.post(url('/api/locations'), newLoc);
 	return data;
 };
 
 export const configureSpots = async (formData) => {
-	const { data } = await axios.post('/api/configure-spaces', formData, {
+	const { data } = await axios.post(url('/api/configure-spaces'), formData, {
 		headers: { 'Content-Type': 'multipart/form-data' },
 	});
 
@@ -59,15 +61,21 @@ export const configureSpots = async (formData) => {
 };
 
 export const sendSMS = async (to, message) => {
-	const { data } = await axios.post('/api/send-sms', { to, message });
+	const { data } = await axios.post(url('/api/send-sms'), { to, message });
 
 	return data;
 };
 
 export const testDevTools = async (formData) => {
-	const { data } = await axios.post('/api/dev-tools', formData, {
+	const { data } = await axios.post(url('/api/dev-tools'), formData, {
 		headers: { 'Content-Type': 'multipart/form-data' },
 	});
+
+	return data;
+};
+
+export const getParkingStatus = async () => {
+	const { data } = await axios.get(url('/api/parking-status'));
 
 	return data;
 };
@@ -78,14 +86,14 @@ export const testDevTools = async (formData) => {
 //
 
 export const register = async (user) => {
-	const { data } = await axios.post('/api/register', user);
+	const { data } = await axios.post(url('/api/register'), user);
 	return data;
 };
 export const login = async (user) => {
-	const { data } = await axios.post('/api/login', user);
+	const { data } = await axios.post(url('/api/login'), user);
 	return data;
 };
 export const updatePassword = async (obj) => {
-	const { data } = await axios.post('/api/users/update-password', obj);
+	const { data } = await axios.post(url('/api/users/update-password'), obj);
 	return data;
 };

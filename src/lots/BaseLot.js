@@ -1,6 +1,7 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+
 import FileUpload from '../components/FileUpload';
 import { configureSpots } from '../config/apis';
 import colors from '../config/colors';
